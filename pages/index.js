@@ -27,6 +27,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import { format } from 'date-fns'
 
 const useStyles = makeStyles((theme) => ({
   service: {
@@ -34,6 +36,15 @@ const useStyles = makeStyles((theme) => ({
   },
   users: {
     marginRight: 0,
+  },
+  button: {
+    color: "#fff",
+    backgroundColor: theme.palette.common.orange,
+    borderRadius: 50,
+    textTransform: "none",
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.light,
+    },
   },
 }));
 
@@ -112,7 +123,14 @@ export default function ProjectManager() {
   ]);
 
   const platformOptions = ["Web", "iOS", "Android"];
-  const featureOptions = ["Photo/Video", "GPS", "File Transfer", "Users/Authentication", "Biometrics", "Push Notifications"]
+  const featureOptions = [
+    "Photo/Video",
+    "GPS",
+    "File Transfer",
+    "Users/Authentication",
+    "Biometrics",
+    "Push Notifications",
+  ];
 
   const [websiteChecked, setWebsiteChecked] = useState(false);
   const [iOSChecked, setiOSChecked] = useState(false);
@@ -127,6 +145,23 @@ export default function ProjectManager() {
   const [users, setUsers] = useState("");
   const [platforms, setPlatforms] = useState([]);
   const [features, setFeatures] = useState([]);
+
+  const addProject = () => {
+    setRows([
+      ...rows,
+      createData(
+        name,
+        format(date, "MM/dd/yy"),
+        service,
+        features.join(", "),
+        complexity,
+        platforms.join(", "),
+        users,
+        total
+      ),
+    ]);
+    setDialogOpen(false)
+  };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -308,7 +343,7 @@ export default function ProjectManager() {
                     </Grid>
                     <Grid item style={{ marginTop: "5em" }}>
                       <Select
-                      style={{width: "12em"}}
+                        style={{ width: "12em" }}
                         displayEmpty
                         renderValue={
                           platforms.length > 0 ? undefined : () => "Platforms"
@@ -389,13 +424,7 @@ export default function ProjectManager() {
                 </Grid>
               </Grid>
               <Grid item>
-                <Grid
-                  item
-                  container
-                  direction="column"
-                  sm
-        
-                >
+                <Grid item container direction="column" sm>
                   <Grid item>
                     <TextField
                       InputProps={{
@@ -409,12 +438,11 @@ export default function ProjectManager() {
                       onChange={(event) => setTotal(event.target.value)}
                     ></TextField>
                   </Grid>
-                  <Grid item>
+                  <Grid item style={{ alignSelf: "flex-end" }}>
                     <Grid
                       item
                       container
                       direction="column"
-                      alignItems="flex-end"
                       style={{ marginTop: "5em" }}
                     >
                       <Grid item>
@@ -456,30 +484,50 @@ export default function ProjectManager() {
                           />
                         </RadioGroup>
                       </Grid>
-                      <Grid item style={{ marginTop: "5em" }}>
-                        <Select
-                        style={{width: "12em"}}
-                        MenuProops={{style: {zIndex: 1302}}}
-                          displayEmpty
-                          renderValue={
-                            features.length > 0 ? undefined : () => "Features"
-                          }
-                          labelId="features"
-                          id="features"
-                          multiple
-                          value={features}
-                          onChange={(event) => setFeatures(event.target.value)}
-                        >
-                          {featureOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </Grid>
                     </Grid>
                   </Grid>
+                  <Grid item style={{ marginTop: "5em" }}>
+                    <Select
+                      style={{ width: "12em" }}
+                      MenuProops={{ style: { zIndex: 1302 } }}
+                      displayEmpty
+                      renderValue={
+                        features.length > 0 ? undefined : () => "Features"
+                      }
+                      labelId="features"
+                      id="features"
+                      multiple
+                      value={features}
+                      onChange={(event) => setFeatures(event.target.value)}
+                    >
+                      {featureOptions.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Grid>
                 </Grid>
+              </Grid>
+            </Grid>
+            <Grid container justify="center" style={{ marginTop: "3em" }}>
+              <Grid item>
+                <Button
+                  color="primary"
+                  onClick={() => setDialogOpen(false)}
+                  style={{ fontWeight: 300 }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  onClick={addProject}
+                  variant="contained"
+                  className={classes.button}
+                >
+                  Add Project
+                </Button>
               </Grid>
             </Grid>
           </DialogContent>
