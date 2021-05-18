@@ -28,7 +28,7 @@ import Radio from "@material-ui/core/Radio";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
-import { format } from 'date-fns'
+import { format } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   service: {
@@ -160,7 +160,14 @@ export default function ProjectManager() {
         total
       ),
     ]);
-    setDialogOpen(false)
+    setDialogOpen(false);
+    setName("");
+    setDate(new Date());
+    setTotal("");
+    setService("");
+    setComplexity("");
+    setPlatforms([]);
+    setFeatures([]);
   };
 
   return (
@@ -523,6 +530,19 @@ export default function ProjectManager() {
               <Grid item>
                 <Button
                   onClick={addProject}
+                  disabled={
+                    service === "Website"
+                      ? name.length === 0 ||
+                        total.length === 0 ||
+                        features.length === 0
+                      : name.length === 0 ||
+                        total.length === 0 ||
+                        features.length === 0 ||
+                        users.length === 0 ||
+                        complexity.length === 0 ||
+                        platforms.length === 0 ||
+                        service.length === 0
+                  }
                   variant="contained"
                   className={classes.button}
                 >
