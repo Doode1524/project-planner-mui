@@ -93,7 +93,7 @@ function EnhancedTableHead(props) {
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
-            hideSortIcon
+              hideSortIcon
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
@@ -161,7 +161,16 @@ const EnhancedTableToolbar = (props) => {
         >
           {numSelected} selected
         </Typography>
-      ) : null}
+      ) : (
+        <Typography
+          className={classes.title}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {null}
+        </Typography>
+      )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -213,7 +222,6 @@ export default function EnhancedTable(props) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
 
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -253,12 +261,12 @@ export default function EnhancedTable(props) {
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    props.setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    props.setPage(0);
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -288,7 +296,10 @@ export default function EnhancedTable(props) {
                 props.rows.filter((row) => row.search),
                 getComparator(order, orderBy)
               )
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .slice(
+                  props.page * rowsPerPage,
+                  props.page * rowsPerPage + rowsPerPage
+                )
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
                   const labelId = `enhanced-table-checkbox-${index}`;
@@ -336,9 +347,9 @@ export default function EnhancedTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.rows.length}
+          count={props.rows.filter((row) => row.search).length}
           rowsPerPage={rowsPerPage}
-          page={page}
+          page={props.page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
