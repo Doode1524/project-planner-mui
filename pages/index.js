@@ -56,9 +56,20 @@ function createData(
   complexity,
   platforms,
   users,
-  total
+  total,
+  search
 ) {
-  return { name, date, service, features, complexity, platforms, users, total };
+  return {
+    name,
+    date,
+    service,
+    features,
+    complexity,
+    platforms,
+    users,
+    total,
+    search,
+  };
 }
 
 export default function ProjectManager() {
@@ -74,7 +85,8 @@ export default function ProjectManager() {
       "N/A",
       "N/A",
       "N/A",
-      "$1500"
+      "$1500",
+      true
     ),
     createData(
       "Bill Gates",
@@ -146,6 +158,7 @@ export default function ProjectManager() {
   const [users, setUsers] = useState("");
   const [platforms, setPlatforms] = useState([]);
   const [features, setFeatures] = useState([]);
+  const [search, setSearch] = useState("");
 
   const addProject = () => {
     setRows([
@@ -158,7 +171,8 @@ export default function ProjectManager() {
         service === "Website" ? "N/A" : complexity,
         service === "Website" ? "N/A" : platforms.join(", "),
         service === "Website" ? "N/A" : users,
-        `$${total}`
+        `$${total}`,
+        true
       ),
     ]);
     setDialogOpen(false);
@@ -171,6 +185,29 @@ export default function ProjectManager() {
     setFeatures([]);
   };
 
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+
+    const rowData = rows.map((row) =>
+      Object.values(row).filter((option) => option !== true && option !== false)
+    );
+
+    const matches = rowData.map((row) =>
+      row.map((option) =>
+        option.toLowerCase().includes(event.target.value.toLowerCase())
+      )
+    );
+
+    const newRows = [...rows];
+    matches.map((row, index) =>
+      row.includes(true)
+        ? (newRows[index].search = true)
+        : (newRows[index].search = false)
+    );
+
+    setRows(newRows);
+  };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid container direction="column">
@@ -180,6 +217,8 @@ export default function ProjectManager() {
         <Grid item>
           <TextField
             placeholder="Search project details or create a new entry."
+            value={search}
+            onChange={handleSearch}
             style={{ width: "35em", marginLeft: "5em" }}
             InputProps={{
               endAdornment: (
@@ -269,7 +308,7 @@ export default function ProjectManager() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, index) => (
+                {rows.filter(row => row.search).map((row, index) => (
                   <TableRow key={index}>
                     <TableCell align="center">{row.name}</TableCell>
                     <TableCell align="center">{row.date}</TableCell>
@@ -327,7 +366,10 @@ export default function ProjectManager() {
                         aria-label="service"
                         name="service"
                         value={service}
-                        onChange={(event) => {setService(event.target.value); setFeatures([])}}
+                        onChange={(event) => {
+                          setService(event.target.value);
+                          setFeatures([]);
+                        }}
                       >
                         <FormControlLabel
                           classes={{ label: classes.service }}
