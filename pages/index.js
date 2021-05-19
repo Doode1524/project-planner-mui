@@ -29,7 +29,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import { format } from "date-fns";
-import EnhancedTable from '../src/ui/EnhancedTable'
+import EnhancedTable from "../src/ui/EnhancedTable";
 
 const useStyles = makeStyles((theme) => ({
   service: {
@@ -285,15 +285,7 @@ export default function ProjectManager() {
             />
           </FormGroup>
         </Grid>
-        <Grid item container justify="flex-end" style={{ marginTop: "5em" }}>
-          <Grid item style={{ marginRight: 75 }}>
-            <FilterListIcon
-              color="secondary"
-              style={{ fontSize: 50 }}
-            ></FilterListIcon>
-          </Grid>
-        </Grid>
-        <Grid item style={{ marginBottom: "15em" }}>
+        <Grid item style={{marginTop: "5em", marginBottom: "15em" }}>
           <EnhancedTable rows={rows} />
         </Grid>
         <Dialog
