@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { lighten, makeStyles } from "@material-ui/core/styles";
@@ -147,7 +147,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
-  const [undo, setUndo] = useState([])
+  const [undo, setUndo] = useState([]);
   const [alert, setAlert] = useState({
     open: false,
     color: "#FF3232",
@@ -162,17 +162,19 @@ const EnhancedTableToolbar = (props) => {
     selectedRows.map((row) => (row.search = false));
     props.setRows(newRows);
 
-    setUndo(selectedRows)
-    setAlert({...alert, open: true})
+    setUndo(selectedRows);
+    props.setSelected([]);
+    setAlert({ ...alert, open: true });
   };
 
   const onUndo = () => {
-    setAlert({...alert, open: false})
-    const newRows = [...props.rows]
-    const redo = [...undo]
-    redo.map(row => row.search = true)
-    Array.prototype.push.apply(newRows, ...redo) // appends all the content of redo into newRows
-  }
+    setAlert({ ...alert, open: false });
+    const newRows = [...props.rows];
+    const redo = [...undo];
+    redo.map((row) => (row.search = true));
+    Array.prototype.push.apply(newRows, ...redo); // appends all the content of redo into newRows
+    props.setRows(newRows);
+  };
 
   return (
     <Toolbar
@@ -222,9 +224,19 @@ const EnhancedTableToolbar = (props) => {
         }}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         message={alert.message}
-        autoHideDuration={4000}
-        onClose={() => setAlert(false)}
-        action={<Button onClick={onUndo} style={{color: "#fff"}}>Undo</Button>}
+        onClose={(event, reason) => {
+          if (reason === "clickaway") {
+            setAlert({ ...alert, open: false });
+            const newRows = [...props.rows];
+            const names = [...undo.map((row) => row.name)];
+            props.setRows(newRows.filter((row) => !names.includes(row.name)));
+          }
+        }}
+        action={
+          <Button onClick={onUndo} style={{ color: "#fff" }}>
+            Undo
+          </Button>
+        }
       />
     </Toolbar>
   );
