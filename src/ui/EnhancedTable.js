@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { lighten, makeStyles } from "@material-ui/core/styles";
@@ -20,6 +20,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import Snackbar from "@material-ui/core/Snackbar";
+import Button from "@material-ui/core/Button";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -145,6 +147,12 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
+  const [undo, setUndo] = useState([])
+  const [alert, setAlert] = useState({
+    open: false,
+    color: "#FF3232",
+    message: "Row Deleted",
+  });
 
   const onDelete = () => {
     const newRows = [...props.rows];
@@ -153,7 +161,18 @@ const EnhancedTableToolbar = (props) => {
     );
     selectedRows.map((row) => (row.search = false));
     props.setRows(newRows);
+
+    setUndo(selectedRows)
+    setAlert({...alert, open: true})
   };
+
+  const onUndo = () => {
+    setAlert({...alert, open: false})
+    const newRows = [...props.rows]
+    const redo = [...undo]
+    redo.map(row => row.search = true)
+    Array.prototype.push.apply(newRows, ...redo) // appends all the content of redo into newRows
+  }
 
   return (
     <Toolbar
@@ -194,6 +213,19 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
       )}
+      <Snackbar
+        open={alert.open}
+        ContentProps={{
+          style: {
+            backgroundColor: alert.color,
+          },
+        }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        message={alert.message}
+        autoHideDuration={4000}
+        onClose={() => setAlert(false)}
+        action={<Button onClick={onUndo} style={{color: "#fff"}}>Undo</Button>}
+      />
     </Toolbar>
   );
 };
