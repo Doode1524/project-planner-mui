@@ -208,7 +208,7 @@ export default function ProjectManager() {
     );
 
     setRows(newRows);
-    setPage(0)
+    setPage(0);
   };
 
   return (
@@ -287,8 +287,17 @@ export default function ProjectManager() {
             />
           </FormGroup>
         </Grid>
-        <Grid item style={{marginTop: "5em", marginBottom: "35em" }}>
-          <EnhancedTable setRows={setRows} rows={rows} page={page} setPage={setPage} />
+        <Grid item style={{ marginTop: "5em", marginBottom: "35em" }}>
+          <EnhancedTable
+            setRows={setRows}
+            rows={rows}
+            page={page}
+            setPage={setPage}
+            websiteChecked={websiteChecked}
+            iOSChecked={iOSChecked}
+            androidChecked={androidChecked}
+            softwareChecked={softwareChecked}
+          />
         </Grid>
         <Dialog
           fullWidth
