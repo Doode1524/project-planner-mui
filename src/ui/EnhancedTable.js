@@ -217,7 +217,26 @@ const EnhancedTableToolbar = (props) => {
       const newRows = [...props.rows];
       newRows.map((row) =>
         eval(
-          `${event.target.value} ${totalFilter}
+          `${event.target.value} ${totalFilter === "=" ? "===" : totalFilter}
+          ${row.total.slice(1, row.total.length)}`
+        )
+          ? (row.search = true)
+          : (row.search = false)
+      );
+      props.setRows(newRows);
+    } else {
+      const newRows = [...props.rows]
+      newRows.map(row => row.search = true)
+      props.setRows(newRows)
+    }
+  };
+
+  const filterChange = (operator) => {
+    if (filterPrice !== "") {
+      const newRows = [...props.rows];
+      newRows.map((row) =>
+        eval(
+          `${filterPrice} ${operator === "=" ? "===" : operator}
           ${row.total.slice(1, row.total.length)}`
         )
           ? (row.search = true)
@@ -312,15 +331,22 @@ const EnhancedTableToolbar = (props) => {
               ),
               endAdornment: (
                 <InputAdornment
-                  onClick={() =>
+                  onClick={() => {
                     setTotalFilter(
                       totalFilter === ">"
                         ? "<"
                         : totalFilter === "<"
                         ? "="
                         : ">"
-                    )
-                  }
+                    );
+                    filterChange(
+                      totalFilter === ">"
+                        ? "<"
+                        : totalFilter === "<"
+                        ? "="
+                        : ">"
+                    );
+                  }}
                   position="end"
                   style={{ cursor: "pointer" }}
                 >
