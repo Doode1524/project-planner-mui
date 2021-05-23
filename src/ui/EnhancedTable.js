@@ -26,6 +26,8 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Chip from "@material-ui/core/Chip";
+import Grid from "@material-ui/core/Grid";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -170,8 +172,7 @@ const EnhancedTableToolbar = (props) => {
   const [undo, setUndo] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
-  const [totalFilter, setTotalFilter] = useState(">");
-  const [filterPrice, setFilterPrice] = useState("");
+
   const [alert, setAlert] = useState({
     open: false,
     color: "#FF3232",
@@ -211,13 +212,15 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleTotalFilter = (event) => {
-    setFilterPrice(event.target.value);
+    props.setFilterPrice(event.target.value);
 
     if (event.target.value !== "") {
       const newRows = [...props.rows];
       newRows.map((row) =>
         eval(
-          `${event.target.value} ${totalFilter === "=" ? "===" : totalFilter}
+          `${event.target.value} ${
+            props.totalFilter === "=" ? "===" : props.totalFilter
+          }
           ${row.total.slice(1, row.total.length)}`
         )
           ? (row.search = true)
@@ -225,18 +228,18 @@ const EnhancedTableToolbar = (props) => {
       );
       props.setRows(newRows);
     } else {
-      const newRows = [...props.rows]
-      newRows.map(row => row.search = true)
-      props.setRows(newRows)
+      const newRows = [...props.rows];
+      newRows.map((row) => (row.search = true));
+      props.setRows(newRows);
     }
   };
 
   const filterChange = (operator) => {
-    if (filterPrice !== "") {
+    if (props.filterPrice !== "") {
       const newRows = [...props.rows];
       newRows.map((row) =>
         eval(
-          `${filterPrice} ${operator === "=" ? "===" : operator}
+          `${props.filterPrice} ${operator === "=" ? "===" : operator}
           ${row.total.slice(1, row.total.length)}`
         )
           ? (row.search = true)
@@ -319,7 +322,7 @@ const EnhancedTableToolbar = (props) => {
       >
         <MenuItem classes={{ root: classes.menu }}>
           <TextField
-            value={filterPrice}
+            value={props.filterPrice}
             onChange={handleTotalFilter}
             placeholder="Enter a price to filter"
             InputProps={{
@@ -332,17 +335,17 @@ const EnhancedTableToolbar = (props) => {
               endAdornment: (
                 <InputAdornment
                   onClick={() => {
-                    setTotalFilter(
-                      totalFilter === ">"
+                    props.setTotalFilter(
+                      props.totalFilter === ">"
                         ? "<"
-                        : totalFilter === "<"
+                        : props.totalFilter === "<"
                         ? "="
                         : ">"
                     );
                     filterChange(
-                      totalFilter === ">"
+                      props.totalFilter === ">"
                         ? "<"
-                        : totalFilter === "<"
+                        : props.totalFilter === "<"
                         ? "="
                         : ">"
                     );
@@ -350,7 +353,9 @@ const EnhancedTableToolbar = (props) => {
                   position="end"
                   style={{ cursor: "pointer" }}
                 >
-                  <span className={classes.totalFilter}>{totalFilter}</span>
+                  <span className={classes.totalFilter}>
+                    {props.totalFilter}
+                  </span>
                 </InputAdornment>
               ),
             }}
@@ -394,8 +399,9 @@ export default function EnhancedTable(props) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
-
+  const [filterPrice, setFilterPrice] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [totalFilter, setTotalFilter] = useState(">");
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -488,6 +494,10 @@ export default function EnhancedTable(props) {
           selected={selected}
           setSelected={setSelected}
           numSelected={selected.length}
+          filterPrice={filterPrice}
+          setFilterPrice={setFilterPrice}
+          totalFilter={totalFilter}
+          setTotalFilter={setTotalFilter}
         />
         <TableContainer>
           <Table
@@ -567,6 +577,21 @@ export default function EnhancedTable(props) {
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
+        <Grid container justify="flex-end">
+          <Grid item>
+            {filterPrice !== "" ? (
+              <Chip
+                label={
+                  totalFilter === ">"
+                    ? `Less than $${filterPrice}`
+                    : totalFilter === "<"
+                    ? `Greater than $${filterPrice}`
+                    : `Equal to $${filterPrice}`
+                }
+              />
+            ) : null}
+          </Grid>
+        </Grid>
       </Paper>
     </div>
   );
