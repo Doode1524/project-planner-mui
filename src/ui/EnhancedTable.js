@@ -392,6 +392,11 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  chip: {
+    marginRight: "2em",
+    backgroundColor: theme.palette.common.blue,
+    color: "#fff",
+  },
 }));
 
 export default function EnhancedTable(props) {
@@ -485,6 +490,25 @@ export default function EnhancedTable(props) {
     }
   };
 
+  const priceFilters = (switchRows) => {
+    if (filterPrice !== "") {
+      const newRows = [...switchRows];
+      newRows.map((row) =>
+        eval(
+          `${filterPrice} ${totalFilter === "=" ? "===" : totalFilter}
+          ${row.total.slice(1, row.total.length)}`
+        )
+          ? row.search === false
+            ? null
+            : (row.search = true)
+          : (row.search = false)
+      );
+      return newRows;
+    } else {
+      return switchRows;
+    }
+  };
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} elevation={0}>
@@ -517,7 +541,7 @@ export default function EnhancedTable(props) {
             />
             <TableBody>
               {stableSort(
-                switchFilters().filter((row) => row.search),
+                priceFilters(switchFilters()).filter((row) => row.search),
                 getComparator(order, orderBy)
               )
                 .slice(
@@ -571,7 +595,7 @@ export default function EnhancedTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.rows.filter((row) => row.search).length}
+          count={priceFilters(switchFilters()).filter((row) => row.search).length}
           rowsPerPage={rowsPerPage}
           page={props.page}
           onChangePage={handleChangePage}
@@ -581,6 +605,13 @@ export default function EnhancedTable(props) {
           <Grid item>
             {filterPrice !== "" ? (
               <Chip
+                onDelete={() => {
+                  setFilterPrice("");
+                  const newRows = [...props.rows];
+                  newRows.map((row) => (row.search = true));
+                  props.setRows(newRows);
+                }}
+                className={classes.chip}
                 label={
                   totalFilter === ">"
                     ? `Less than $${filterPrice}`
