@@ -595,7 +595,9 @@ export default function EnhancedTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={priceFilters(switchFilters()).filter((row) => row.search).length}
+          count={
+            priceFilters(switchFilters()).filter((row) => row.search).length
+          }
           rowsPerPage={rowsPerPage}
           page={props.page}
           onChangePage={handleChangePage}
