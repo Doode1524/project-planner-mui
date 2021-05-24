@@ -579,7 +579,7 @@ export default function EnhancedTable(props) {
                       </TableCell>
                       <TableCell align="center">{row.date}</TableCell>
                       <TableCell align="center">{row.service}</TableCell>
-                      <TableCell style={{ maxWidth: "5em" }} align="center">
+                      <TableCell style={{ width: "5em"}} align="center">
                         {row.features}
                       </TableCell>
                       <TableCell align="center">{row.complexity}</TableCell>

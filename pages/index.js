@@ -217,7 +217,7 @@ export default function ProjectManager() {
 
   const serviceQuestions = (
     <React.Fragment>
-      <Grid item style={{marginTop: matchesSM ? 20 : null}}>
+      <Grid item style={{ marginTop: matchesSM ? 20 : "5em" }}>
         <Typography variant="h4">Service</Typography>
       </Grid>
       <Grid item>
@@ -254,7 +254,7 @@ export default function ProjectManager() {
   );
 
   const complexityQuestions = (
-    <Grid item>
+    <Grid item style={{ marginBottom: matchesSM ? 50 : null }}>
       <Grid
         item
         container
@@ -508,6 +508,7 @@ export default function ProjectManager() {
                   <Hidden mdUp>{complexityQuestions}</Hidden>
                   <Grid item>
                     <TextField
+                      style={{ width: matchesSM ? 250 : undefined }}
                       fullWidth={!matchesSM}
                       label="Name"
                       id="name"
@@ -519,7 +520,6 @@ export default function ProjectManager() {
                     item
                     container
                     direction="column"
-                    style={{ marginTop: matchesSM ? "50px" : "5em" }}
                     alignItems={matchesSM ? "center" : undefined}
                   >
                     <Hidden smDown>{serviceQuestions}</Hidden>
@@ -529,7 +529,7 @@ export default function ProjectManager() {
                     >
                       <Select
                         disabled={service === "Website"}
-                        style={{ width: "12em" }}
+                        style={{ width: matchesSM ? 250 : "12em" }}
                         displayEmpty
                         renderValue={
                           platforms.length > 0 ? undefined : () => "Platforms"
@@ -561,6 +561,7 @@ export default function ProjectManager() {
                 >
                   <Grid item style={{ marginTop: matchesSM ? "50px" : null }}>
                     <KeyboardDatePicker
+                      style={{ width: matchesSM ? 250 : undefined }}
                       format="MM/dd/yyyy"
                       value={date}
                       onChange={(newDate) => setDate(newDate)}
@@ -579,6 +580,7 @@ export default function ProjectManager() {
                 >
                   <Grid item style={{ marginTop: matchesSM ? "50px" : null }}>
                     <TextField
+                      style={{ width: matchesSM ? 250 : undefined }}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">$</InputAdornment>
@@ -593,7 +595,7 @@ export default function ProjectManager() {
                   <Hidden smDown>{userQuestions}</Hidden>
                   <Grid item style={{ marginTop: matchesSM ? "50px" : "5em" }}>
                     <Select
-                      style={{ width: "12em" }}
+                      style={{ width: matchesSM ? 250 : "12em" }}
                       MenuProops={{ style: { zIndex: 1302 } }}
                       displayEmpty
                       renderValue={
